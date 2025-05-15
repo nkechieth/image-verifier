@@ -10,7 +10,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const app = express();
-const upload = multer({ dest: 'uploads/' });
+const upload = multer({ dest: '/tmp/' }); // Use /tmp for Vercel
 
 // Serve static files from the current directory
 app.use(express.static(__dirname));
@@ -21,7 +21,7 @@ app.get('/', (req, res) => {
 });
 
 // Handle image verification
-app.post('/verify-image', upload.single('image'), async (req, res) => {
+app.post('/api/verify-image', upload.single('image'), async (req, res) => {
     try {
         if (!req.file) {
             return res.status(400).json({ error: 'No image file provided' });
@@ -59,6 +59,5 @@ if (!fs.existsSync('uploads')) {
     fs.mkdirSync('uploads');
 }
 
-app.listen(3000, () => {
-    console.log('Server is running on port 3000');
-});
+// Export the Express API
+export default app;
