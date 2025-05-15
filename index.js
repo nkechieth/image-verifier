@@ -10,10 +10,10 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const app = express();
-const upload = multer({ dest: '/tmp/' }); // Use /tmp for Vercel
+const upload = multer({ dest: 'uploads/' });
 
-// Serve static files from the current directory
-app.use(express.static(__dirname));
+// Serve static files from the public directory
+app.use(express.static(path.join(__dirname, 'public')));
 
 // Serve the frontend.html file at the root route
 app.get('/', (req, res) => {
@@ -30,8 +30,8 @@ app.post('/api/verify-image', upload.single('image'), async (req, res) => {
         const form = new FormData();
         form.append('media', fs.createReadStream(req.file.path));
         form.append('models', 'genai');
-        form.append('api_user', '26851975');
-        form.append('api_secret', 'Fqo7gvQodWPzkLbg7XF7drou7GKXF56N');
+        form.append('api_user', process.env.SIGHTENGINE_API_USER || '26851975');
+        form.append('api_secret', process.env.SIGHTENGINE_API_SECRET || 'Fqo7gvQodWPzkLbg7XF7drou7GKXF56N');
 
         const response = await axios({
             method: 'post',
@@ -58,6 +58,11 @@ app.post('/api/verify-image', upload.single('image'), async (req, res) => {
 if (!fs.existsSync('uploads')) {
     fs.mkdirSync('uploads');
 }
+
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
+});
 
 // Export the Express API
 export default app;

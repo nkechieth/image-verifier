@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: image-verifier
+    env: node
+    buildCommand: npm install
+    startCommand: node index.js
+    envVars:
+      - key: SIGHTENGINE_API_USER
+        sync: false
+      - key: SIGHTENGINE_API_SECRET
+        sync: false 
